@@ -1,0 +1,78 @@
+AppBundle\Entity\StagiairesCompetences:
+    type: entity
+    table: stagiaires_competences
+    indexes:
+        stagiaires_competences_fk0:
+            columns:
+                - id_stage
+        stagiaires_competences_fk1:
+            columns:
+                - id_competence
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        validationStagiaire:
+            type: boolean
+            nullable: true
+            column: validation_stagiaire
+        noteStagiaire:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: note_stagiaire
+        competenceStagiaire:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: competence_stagiaire
+        validationMaitreDeStage:
+            type: boolean
+            nullable: false
+            column: validation_maitre_de_stage
+        noteMaitreDeStage:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: note_maitre_de_stage
+        competenceMaitreDeStage:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            column: competence_maitre_de_stage
+        validationResponsable:
+            type: boolean
+            nullable: false
+            column: validation_responsable
+    manyToOne:
+        idStage:
+            targetEntity: Stages
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_stage:
+                    referencedColumnName: id
+            orphanRemoval: false
+        idCompetence:
+            targetEntity: Competences
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_competence:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

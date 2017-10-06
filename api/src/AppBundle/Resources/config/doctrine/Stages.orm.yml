@@ -1,0 +1,43 @@
+AppBundle\Entity\Stages:
+    type: entity
+    table: stages
+    indexes:
+        stages_fk0:
+            columns:
+                - id_metier
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        dateDebut:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: date_debut
+        dateFin:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: date_fin
+    manyToOne:
+        idMetier:
+            targetEntity: Metiers
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_metier:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<title>Documentation API MyExp+</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<style>
+		body {padding-top: 70px;}
+		.description {margin-left: 25px;}
+		.droits {text-decoration: underline;}
+		.get, .post, .delete, .put, .patch {color: white; padding: 5px; border-radius: 5%;}
+		.get {background-color: green;}
+		.post {background-color: blue;}
+		.delete {background-color: red;}
+		.put {background-color: orange;}
+		.patch {background-color: purple;}
+	</style>
+</head>
+<body data-spy="scroll" data-target=".navbar" data-offset="50">
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">MyExp+ Documentation</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Aller à <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="#1">Utilisateurs</a></li>
+							<li><a href="#2">Stagiaires</a></li>
+							<li><a href="#3">Maitres de stage</a></li>
+							<li><a href="#4">Stages</a></li>
+							<li><a href="#5">Métiers</a></li>
+							<li><a href="#6">Compétences</a></li>
+							<li><a href="#7">Competences Stagiaires</a></li>
+							<li><a href="#8">Stages Stagiaires</a></li>
+							<li><a href="#9">Stages Maitres de stage</a></li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+</nav>
+
+<div class="container">
+	
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<p>L'API retourne du JSON.</p>
+			<p>Les passwords sont chiffrés avec bcrypt.</p>
+			<p>A chaques requètes faites à l'API, il est verifié si le token d'authentification est présent et valide dans le header (X-Auth-Token).</p>
+			<p>Il y a quatres niveaux de droits : 0, 1, 2 et 3</p>
+			<p>Les mots de passe SuperAdmin, Admin et Maitres de stages sont génerés aleatoirement et envoyés par mail</p>
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<h3>Installation serveur</h3>
+			<h4>Installation php/apache/SQL/phpmyAdmin</h4>
+			<p>sudo apt-get update</p>
+			<p>sudo apt-get upgrade</p>
+			<p>sudo apt-get install</p>
+			<p>sudo apt-get install apache2</p>
+			<p>sudo apt-get install php5</p>
+			<p>sudo apt-get install mysql-server</p>
+			<p>sudo apt-get install php5-mysql</p>
+			<p>sudo apt-get install php5-intl</p>
+			<p>sudo apt-get install php5-phpmyadmin</p>
+			<p>a2enmod rewrite</p>
+			<p>service apache2 restart</p>
+
+			<h4>Installation Composer</h4>
+			<p>php -r "readfile('https://getcomposer.org.installer';)" &#62; composer-setup.php</p>
+			<p>php composer-setup.php</p>
+			<p>mv composer.phar /usr/local/bin/composer</p>
+
+			<h4>modifier la conf serveur</h4>
+			<p>DocumentRoot /var/www/html/api/web</p>
+			<p>&#60;Directory /var/www/html/api/web&#62;</p>
+			<div class="description">
+				<p>AllowOverride All</p>
+				<p>Order Allow,Deny</p>
+				<p>Allow from All</p>
+			</div>
+			<p>&#60;/Directory&#62;</p>
+			<p>service apache2 restart</p>
+
+			<h4>Reste des modifications :</h4>
+			<p>Voir sur adresseDuServeur/config.php</p>
+		</div>
+	</div>
+
+	<div id="1" class="panel panel-default">
+		<div class="panel-heading"><h3>Utilisateurs</h3></div>
+		<div class="panel-body">
+			<h4>Lister les utilisateurs</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /utilisateurs</p>
+				<p>Retour : [ { "id":int, "mail":string, "password_hash":string, "role":int } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un utilisateur</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /utilisateurs/{id}</p>
+				<p>Retour : { "id":int, "mail":string, "password_hash":string, "role":int }</p>
+			</div>
+			<br>
+			<h4>Créer un superAdministrateur</h4>
+			<p class="droits">Droits necéssaires : 3</p>
+			<div class="description">
+				<p>Paramètres : mail:string, role:3</p>
+				<p>Route : <span class="post">POST</span> /utilisateurs/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>SuperAdministrateur creé : { "id":int, "mail":string, "password_hash":string, "role":int }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+					<li>Regex email non valide : { "message_err":"L'adresse mail n'est pas valide !" }</li>
+					<li>Email deja utilisé : { "message_err" => "L'adresse mail est déjà utilisé !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Créer un administrateur</h4>
+			<p class="droits">Droits necéssaires : 3</p>
+			<div class="description">
+				<p>Paramètres : mail:string, role:2</p>
+				<p>Route : <span class="post">POST</span> /utilisateurs/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Administrateur creé : { "id":int, "mail":string, "password_hash":string, "role":int }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+					<li>Regex email non valide : { "message_err":"L'adresse mail n'est pas valide !" }</li>
+					<li>Email deja utilisé : { "message_err" => "L'adresse mail est déjà utilisé !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Créer un maitre de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : mail:string, role:1, nom_entreprise:string</p>
+				<p>Route : <span class="post">POST</span> /utilisateurs/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Maitre de stage creé : { "id":int, "mail":string, "password_hash":string, "role":int, "nom_entreprise:string" }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+					<li>Regex email non valide : { "message_err":"L'adresse mail n'est pas valide !" }</li>
+					<li>Email deja utilisé : { "message_err" => "L'adresse mail est déjà utilisé !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Créer un stagiaire</h4>
+			<p>ATTENTION : Ne pas envoyer le token dans le header dans le cas ou la creation se fait directement par un stagiaire, dans le cas ou l'inscription se fait via un SuperAdmin/Admin rien ne change.</p>
+			<div class="description">
+				<p>Paramètres : mail:string, password_hash:string, role:0, nom:string, prenom:string</p>
+				<p>Route : <span class="post">POST</span> /utilisateurs/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stagiaire creé : { "id":int, "mail":string, "password_hash":string, "role":int, nom:string, prenom:string }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+					<li>Regex email non valide : { "message_err":"L'adresse mail n'est pas valide !" }</li>
+					<li>Email deja utilisé : { "message_err" => "L'adresse mail est déjà utilisé !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Supprimer un utilisateur</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="delete">DELETE</span> /utilisateurs/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Utilisateur trouvé : { "message":"L'utilisateur a bien été supprimé !" }</li>
+					<li>Utilisateur non trouvé : { "message_err":"L'utilisateur est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs utilisateur</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : variables selon l'utilisateur modifié</p>
+				<p>Route : <span class="patch">PATCH</span> /utilisateurs/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Utilisateur modifié : { (Informations variables selon l'utilisateur modifié) }</li>
+					<li>Utilisateur non trouvé : { "message_err":"L'utilisateur est introuvable !" }</li>
+					<li>Regex email non valide : { "message_err":"L'adresse mail n'est pas valide !" }</li>
+					<li>Email deja utilisé : { "message_err" => "L'adresse mail est déjà utilisé !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Connexion</h4>
+			<div class="description">
+				<p>Paramètres : mail:string, password:string</p>
+				<p>Route : <span class="post">POST</span> /connexion</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Utilisateur trouvé, création d'un token : { "id":int, "value":string, "created_at":string, "user":{ "id":int, "mail":string, "password_hash":string, "role":int } }</li>
+					<li>Utilisateur non trouvé/informations erronées : { "message_err" => "Les informations sont incorrectes" }</li>
+					<li>Compte stagiaire non activé : {"message_err" => "Le compte n'est pas activé" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Déconnexion</h4>
+			<div class="description">
+				<p>Paramètres : id:int (id token)</p>
+				<p>Route : <span class="delete">DELETE</span> /deconnexion/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>{ "code": 200 }</li>
+					<li>{ "code": 400, "message": "Bad Request" }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="2" class="panel panel-default">
+		<div class="panel-heading"><h3>Stagiaires</h3></div>
+		<div class="panel-body">
+			<h4>Lister les stagiaires</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /stagiaires</p>
+				<p>Retour : [ { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": int }, "activation": int } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un stagiaire</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /stagiaires/{id}</p>
+				<p>Retour :  { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": int }, "activation": int }</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un stagiaire en fonction d'un utilisateur</h4>
+			<p class="droits">Droits necéssaires : 1, 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id_utilisateur:int</p>
+				<p>Route : <span class="get">GET</span> /stagiaireinfo/{id_utilisateur}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Utilisateur trouvé : { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": int }, "activation": int }</li>
+					<li>Utilisateur non trouvé :  { "message_err":"L'utilisateur est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs stagiaires</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": int }, "activation": int }</p>
+				<p>Route : <span class="patch">PATCH</span> /stagiaires/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stagiaire modifié : { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": int }, "activation": int }</li>
+					<li>Stagiaire non trouvé : { "message_err":"Le stagiaire est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+			<h4>Activer compte stagiaire</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="patch">PATCH</span> /stagiaires/activation/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Compte activé : { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": int }, "activation": int }</li>
+					<li>Stagiaire non trouvé : { "message_err":"Le stagiaire est introuvable !" }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="3" class="panel panel-default">
+		<div class="panel-heading"><h3>Maitres de stage</h3></div>
+		<div class="panel-body">
+			<h4>Lister les maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /maitresdestage</p>
+				<p>Retour : [ { "id": int, "nom_entreprise": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string,"role": int } } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /maitresdestage/{id}</p>
+				<p>Retour :  { "id": int, "nom_entreprise": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string,"role": int } }</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un maitre de stage en fontion d'un stage</h4>
+			<p class="droits">Droits necéssaires : 1, 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id_stage:int</p>
+				<p>Route : <span class="get">GET</span> /stageformaitredestage/{id_stage}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage trouvé :  { "id": int, "nom_entreprise": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string,"role": int } }</li>
+					<li>Stage non trouvé :  { "message_err":"Le stage est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un maitre de stage en fontion d'un utilisateur</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id_utilisateur:int</p>
+				<p>Route : <span class="get">GET</span> /maitresdestage/{id_utilisateur}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage trouvé :  { "id": int, "nom_entreprise": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string,"role": int } }</li>
+					<li>Stage non trouvé :  { "message_err":"L'utilisateur est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : nom_entreprise: string</p>
+				<p>Route : <span class="patch">PATCH</span> /maitresdestage/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Maitres de stage modifié : { "id": 1, "nom_entreprise": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string,"role": int }</li>
+					<li>Maitres de stage non trouvé : { "message_err":"Le stage est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="4" class="panel panel-default">
+		<div class="panel-heading"><h3>Stages</h3></div>
+		<div class="panel-body">
+			<h4>Lister les stages</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /stages</p>
+				<p>Retour : [ { "id":int, "id_metier":int, "date_debut":date, "date_fin":date } ]</p>
+				<p>Les dates sont typés : Y-m-d</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /stages/{id}</p>
+				<p>Retour :  { "id":int, "id_metier":int, "date_debut":date, "date_fin":date }</p>
+			</div>
+			<br>
+			<h4>Créer un stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id_metier":int, "date_debut":date, "date_fin":date</p>
+				<p>Route : <span class="post">POST</span> /stages/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage creé : {"id":int, "id_metier":int, "date_debut":date, "date_fin":date }</li>
+					<li>Date format invalide : { "message_err":"Le format doit être de type date" }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Supprimer un stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="delete">DELETE</span> /stages/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage trouvé : { "message":"Le stage a bien été supprimé !" }</li>
+					<li>Stage non trouvé : { "message_err":"Le stage est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id":int, "id_metier":int, "date_debut":date, "date_fin":date</p>
+				<p>Route : <span class="patch">PATCH</span> /stages/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage modifié : { "id":int, "id_metier":int, "date_debut":date, "date_fin":date }</li>
+					<li>Stage non trouvé : { "message_err":"Le stage est introuvable !" }</li>
+					<li>Date format invalide : { "message_err":"Le format doit être de type date" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="5" class="panel panel-default">
+		<div class="panel-heading"><h3>Métiers</h3></div>
+		<div class="panel-body">
+			<h4>Lister les métiers</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /metiers</p>
+				<p>Retour : [ { "id":int, "titre":string, "photo_path":string, "definition":string } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un métier</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /metiers/{id}</p>
+				<p>Retour :  { "id":int, "titre":string, "photo_path":string, "definition":string }</p>
+			</div>
+			<br>
+			<h4>Créer un métier</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "titre":string, "photo_path":string, "definition":string</p>
+				<p>Route : <span class="post">POST</span> /metiers/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Metier creé : { "id":int, "titre":string, "photo_path":string, "definition":string }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Supprimer un métier</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="delete">DELETE</span> /metiers/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Metier trouvé : { "message":"Le metier a bien été supprimé !" }</li>
+					<li>Metier non trouvé : { "message_err":"Le métier est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs métier</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "titre":string, "photo_path":string, "definition":string</p>
+				<p>Route : <span class="patch">PATCH</span> /metiers/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Métier modifié : { "id":int, "titre":string, "photo_path":string, "definition":string }</li>
+					<li>Métier non trouvé : { "message_err":"Le métier est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="6" class="panel panel-default">
+		<div class="panel-heading"><h3>Compétences</h3></div>
+		<div class="panel-body">
+			<h4>Lister les compétences</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /competences</p>
+				<p>Retour : [ { "id":int, "id_metier":int, "titre":string, "type":string } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'une competence</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /competences/{id}</p>
+				<p>Retour :  { "id":int, "id_metier":int, "titre":string, "type":string }</p>
+			</div>
+			<br>
+			<h4>Créer une compétence</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id":int, "id_metier":int, "titre":string, "type":string</p>
+				<p>Route : <span class="post">POST</span> /competences/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Compétence creé : { "id":int, "id_metier":int, "titre":string, "type":string }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Supprimer une compétence</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="delete">DELETE</span> /competences/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Compétence trouvé : { "message":"La compétence a bien été supprimé !" }</li>
+					<li>Compétence non trouvé : { "message_err":"La compétence est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs compétence</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id":int, "id_metier":int, "titre":string, "type":string</p>
+				<p>Route : <span class="patch">PATCH</span> /competences/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Compétence modifié : { "id":int, "id_metier":int, "titre":string, "type":string }</li>
+					<li>Compétence non trouvé : { "message_err":"La compétence est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="7" class="panel panel-default">
+		<div class="panel-heading"><h3>Competences Stagiaires</h3></div>
+		<div class="panel-body">
+			<h4>Récuperer les competences d'un stagiaire en fonction d'un stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id_stage:int</p>
+				<p>Route : <span class="get">GET</span> /mycompetences/{id_stage}</p>
+				<p>Retour :  [ { "id":int, "id_stage":int, "id_competence":int, "note_stagiaire":int, "competence_stagiaire":int, "validation_stagiaire":int, "note_maitre_de_stage":int, "competence_maitre_de_stage":int, "validation_maitre_de_stage":int,  "validation_responsable":int } ]</p>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "noteStagiaire":int, "competenceStagiaire":int, "validationStagiaire":int, "noteMaitreDeStage":int, "competenceMaitreDeStage":int, "validationMaitreDeStage":int,  "validationResponsable":int</p>
+				<p>Route : <span class="patch">PATCH</span> /stagiairescompetences/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Competences d'un stagiaire modifié : { "id_stage":int, "id_competence":int, "note_stagiaire":int, "competence_stagiaire":int, "validation_stagiaire":int, "note_maitre_de_stage":int, "competence_maitre_de_stage":int, "validation_maitre_de_stage":int,  "validation_responsable":int }</li>
+					<li>Competences d'un stagiaire non trouvé : { "message_err":"La competence du stagiaire est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Demander une validation de competences</h4>
+			<p>Envoi un mail au maitre de stage pour lui demander une validation</p>
+			<div class="description">
+				<p>Paramètres : id_stage:int</p>
+				<p>Route : <span class="post">POST</span> /validation/{id_stage}</p>
+				<p>Retour :  Rien</p>
+			</div>
+		</div>
+	</div>
+
+	<div id="8" class="panel panel-default">
+		<div class="panel-heading"><h3>Stages Stagiaires</h3></div>
+		<div class="panel-body">
+			<h4>Lister les stages stagiaires</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /stagesstagiaires</p>
+				<p>Retour : [ { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_stagiaire": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un stage d'un stagiaire</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /stagesstagiaires/{id}</p>
+				<p>Retour : { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_stagiaire": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int }</p>
+			</div>
+			<br>
+			<h4>Récuperer les stages d'un stagiaire</h4>
+			<p class="droits">Droits necéssaires : 1, 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id_stagiaire:int</p>
+				<p>Route : <span class="get">GET</span> /mystages/{id_stagiaire}</p>
+				<p>Retour : [ { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_stagiaire": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int } ]</p>
+			</div>
+			<br>
+			<h4>Ajouter un stage a un stagiaire</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id_metier":int, "id_stagiaire":int</p>
+				<p>Route : <span class="post">POST</span> /stagesstagiaires/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage stagiaire creé : { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_stagiaire": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Supprimer un stage d'un stagiaire</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="delete">DELETE</span> /stagesstagiaires/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage Stagiaire trouvé : { "message":"Le stage du stagiaire a bien été supprimé !" }</li>
+					<li>Stage Stagiaire non trouvé : { "message_err":"Le stage du stagiaire est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs stage stagiaire</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id_metier":int, "id_stagiaire":int</p>
+				<p>Route : <span class="patch">PATCH</span> /stagesstagiaires/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage stagiaire modifié : { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_stagiaire": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int }</li>
+					<li>Stage stagiaire non trouvé : { "message_err":"La compétence est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div id="9" class="panel panel-default">
+		<div class="panel-heading"><h3>Stages Maitres de stage</h3></div>
+		<div class="panel-body">
+			<h4>Lister les stages maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : Aucun</p>
+				<p>Route : <span class="get">GET</span> /stagesmaitresdestage</p>
+				<p>Retour : [ { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_maitre_de_stage": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int } ]</p>
+			</div>
+			<br>
+			<h4>Récuperer les informations d'un stage d'un maitre de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="get">GET</span> /stagesmaitresdestage/{id}</p>
+				<p>Retour : { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_maitre_de_stage": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int }</p>
+			</div>
+			<br>
+			<h4>Créer un stage maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id_metier":int, "id_maitre_de_stage":int</p>
+				<p>Route : <span class="post">POST</span> /stagesmaitresdestage/new</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stages maitres de stage creé : { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_maitre_de_stage": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int }</li>
+					<li>Champs non renseignés : { "message_err":"Tous les champs ne sont pas remplis !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Supprimer un stage maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : id:int</p>
+				<p>Route : <span class="delete">DELETE</span> /stagesmaitresdestage/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage maitres de stage trouvé : { "message":"Le stage du maitres de stage a bien été supprimé !" }</li>
+					<li>Stage maitres de stage non trouvé : { "message_err":"Le stage du maitres de stage est introuvable !" }</li>
+				</ul>
+			</div>
+			<br>
+			<h4>Modifier un ou plusieurs champs stage maitres de stage</h4>
+			<p class="droits">Droits necéssaires : 2, 3</p>
+			<div class="description">
+				<p>Paramètres : "id_metier":int, "id_maitre_de_stage":int</p>
+				<p>Route : <span class="patch">PATCH</span> /stagesmaitresdestage/{id}</p>
+				<p>Retours :</p>
+				<ul>
+					<li>Stage maitres de stage modifié : { "id_stage": { "id": int, "date_debut": date, "date_fin": date, "id_metier": { "id": int, "titre": string, "photo_path": string, "definition": string } }, "id_maitre_de_stage": { "id": int, "nom": string, "prenom": string, "id_utilisateur": { "id": int, "mail": string, "password_hash": string, "role": 3 }, "activation": int }, "id": int }</li>
+					<li>Stage maitres de stage non trouvé : { "message_err":"La compétence est introuvable !" }</li>
+					<li>Formulaire non valide : { (Informations du formulaire) }</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+	var offset = 60;
+
+	$('.navbar li a').click(function(event) {
+		event.preventDefault();
+		$($(this).attr('href'))[0].scrollIntoView();
+		scrollBy(0, -offset);
+	});
+</script>
+</body>
+</html>

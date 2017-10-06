@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Metier</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ metier.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ metier.titre }}</td>
+            </tr>
+            <tr>
+                <th>Photopath</th>
+                <td>{{ metier.photoPath }}</td>
+            </tr>
+            <tr>
+                <th>Definition</th>
+                <td>{{ metier.definition }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('metiers_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('metiers_edit', { 'id': metier.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

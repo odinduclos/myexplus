@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Stagesstagiaires list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for stagesStagiaire in stagesStagiaires %}
+            <tr>
+                <td><a href="{{ path('stagesstagiaires_show', { 'id': stagesStagiaire.id }) }}">{{ stagesStagiaire.id }}</a></td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('stagesstagiaires_show', { 'id': stagesStagiaire.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('stagesstagiaires_edit', { 'id': stagesStagiaire.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('stagesstagiaires_new') }}">Create a new stagesStagiaire</a>
+        </li>
+    </ul>
+{% endblock %}

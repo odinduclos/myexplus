@@ -1,0 +1,41 @@
+AppBundle\Entity\StagesMaitresDeStage:
+    type: entity
+    table: stages_maitres_de_stage
+    indexes:
+        stages_maitres_de_stage_fk1:
+            columns:
+                - id_maitre_de_stage
+        id_stage:
+            columns:
+                - id_stage
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    manyToOne:
+        idStage:
+            targetEntity: Stages
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_stage:
+                    referencedColumnName: id
+            orphanRemoval: false
+        idMaitreDeStage:
+            targetEntity: MaitresDeStage
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_maitre_de_stage:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Stagiairescompetences list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Validationstagiaire</th>
+                <th>Notestagiaire</th>
+                <th>Competencestagiaire</th>
+                <th>Validationmaitredestage</th>
+                <th>Notemaitredestage</th>
+                <th>Validationresponsable</th>
+                <th>Competencemaitredestage</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for stagiairesCompetence in stagiairesCompetences %}
+            <tr>
+                <td><a href="{{ path('stagiairescompetences_show', { 'id': stagiairesCompetence.id }) }}">{{ stagiairesCompetence.id }}</a></td>
+                <td>{% if stagiairesCompetence.validationStagiaire %}Yes{% else %}No{% endif %}</td>
+                <td>{{ stagiairesCompetence.noteStagiaire }}</td>
+                <td>{{ stagiairesCompetence.competenceStagiaire }}</td>
+                <td>{% if stagiairesCompetence.validationMaitreDeStage %}Yes{% else %}No{% endif %}</td>
+                <td>{{ stagiairesCompetence.noteMaitreDeStage }}</td>
+                <td>{% if stagiairesCompetence.validationResponsable %}Yes{% else %}No{% endif %}</td>
+                <td>{{ stagiairesCompetence.competenceMaitreDeStage }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('stagiairescompetences_show', { 'id': stagiairesCompetence.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('stagiairescompetences_edit', { 'id': stagiairesCompetence.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('stagiairescompetences_new') }}">Create a new stagiairesCompetence</a>
+        </li>
+    </ul>
+{% endblock %}

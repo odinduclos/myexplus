@@ -1,0 +1,5 @@
+{
+    "require": {
+        "nelmio/cors-bundle": "^1.5"
+    }
+}

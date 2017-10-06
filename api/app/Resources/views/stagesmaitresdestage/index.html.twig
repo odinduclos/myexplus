@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Stagesmaitresdestages list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for stagesMaitresDeStage in stagesMaitresDeStages %}
+            <tr>
+                <td><a href="{{ path('stagesmaitresdestage_show', { 'id': stagesMaitresDeStage.id }) }}">{{ stagesMaitresDeStage.id }}</a></td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('stagesmaitresdestage_show', { 'id': stagesMaitresDeStage.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('stagesmaitresdestage_edit', { 'id': stagesMaitresDeStage.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('stagesmaitresdestage_new') }}">Create a new stagesMaitresDeStage</a>
+        </li>
+    </ul>
+{% endblock %}

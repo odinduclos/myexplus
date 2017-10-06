@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Stages list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Datedebut</th>
+                <th>Datefin</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for stage in stages %}
+            <tr>
+                <td><a href="{{ path('stages_show', { 'id': stage.id }) }}">{{ stage.id }}</a></td>
+                <td>{{ stage.dateDebut }}</td>
+                <td>{{ stage.dateFin }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('stages_show', { 'id': stage.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('stages_edit', { 'id': stage.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('stages_new') }}">Create a new stage</a>
+        </li>
+    </ul>
+{% endblock %}
