@@ -17,5 +17,7 @@ Le projet est décomposé en :
   
 ## Etat courant
 Le projet est disponible temporairement en ligne à : http://pierreriche.com/
+
 L'application android non signée est disponible temporairement à : http://www.pierreriche.com/assets/myexp.apk
+
 L'application IOS reste à compiler et signer à partir des sources de la branche REACT
