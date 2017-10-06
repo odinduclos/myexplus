@@ -1,0 +1,85 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img class="logo" src="assets/img/logo_40x40.svg" width="40px" height="40px"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ng-click="r_rome()" ng-if="userRole > 1" title='Gérer les fiches ROME'>Fiches ROME</a></li>
+                <li class="dropdown" >
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les utilisateurs de myexplus.">Utilisateurs<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_query()" ng-if="userRole > 1" title="Gérer les demandes d'inscription des stagiaires">Demandes d'inscrition</a></li>
+                        <li><a ng-click="r_admin()" ng-if="userRole == 3" title="Gérer les utilisateurs">Gérer les utilisateurs</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_validation()" title="Valider les compétences des stagiaires.">Compétences à valider</a></li>
+                        <li><a ng-click="r_archive()" ng-if="userRole == 1">Voir les compétences validées</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" ng-if="userRole > 1">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les stages E2C.">Stages<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_stagiaire()">Créer un stagiaire</a></li>
+                        <li><a ng-click="r_stage()" title="Ajouter ou supprimer un stage">Gérer les stages</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_master()" ng-if="userRole > 1">Créer un maître de stage</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><input type="submit" class="disconnect text-white" value="Déconnexion" ng-click="logout()"></li>
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <p>Cette page permet de modifier puis valider le niveau d'acquisition des compétences évaluées par les
+                stagiaires sur l'application mobile au cours de son stage.</p>
+            <label for="stage">Sélectionnez un stagiaire : </label>
+            <select id="stage" ng-model="stagiaire.id" ng-change="load_stage(stagiaire.id)">
+                <option ng-repeat="stagiaire in stagiaires" ng-value="stagiaire.id">{{stagiaire.prenom}} {{stagiaire.nom}}</option>
+            </select>
+        </div>
+    </div>
+    <br/><br/>
+    <div class="row">
+        <div class="skills col-md-4 col-md-offset-1" ng-repeat="stage in stages| filter: {validation_responsable: false}" ng-if="!stage.hide">
+            <p style="margin: 0 0 35px;"><b class="text-blue">{{stagiaire.prenom}} {{stagiaire.nom}}</b><span class="date pull-right"><b>du {{stage.id_stage.date_debut}} au {{stage.id_stage.date_fin}}</b></span></p>
+            <span>{{stage_name[stage.id_stage.id]}} </span>
+            <div class="skills-content skill-image">
+                <p class="title-skills">{{stage.id_competence.titre}}</p>
+                <form>
+                    <div class="stars-space">
+                    <span ng-repeat="n in [].constructor(5) track by $index">
+                        <span ng-if="$index < stage.competence_stagiaire">
+                            <input type="checkbox" value={{$index+1}} class="star stars_val" ng-model="lol" >
+                            <label class="star stars_val" data-value={{$index+1}} data-activated="0" ng-click="add($index+1, stage.id)" style="background-image: url(assets/img/star_full_30x25.svg)" data-stage={{stage.id_competence.id}}></label>
+                        </span>
+                        <span ng-if="$index >= stage.competence_stagiaire">
+                            <input class="star stars_val" value={{$index+1}} type="checkbox" ng-model="lol">
+                            <label class="star stars_val" data-value={{$index+1}} data-activated="0" ng-click="add($index+1, stage.id)" data-stage={{stage.id_competence.id}} style="background-image: url(assets/img/star_empty_30x25.svg)"></label>
+                        </span>
+                    </span>
+                    </div>
+                    <br>
+                    <button class="text-white btn-skills" ng-click="note(stage)">Evaluer la compétence</button>
+                </form>
+            </div>
+            <div class="flash-message panel-{{alerts.class}}" ng-show="alerts.messages" ng-mouseover="disableFlash()" >
+              <div ng-repeat="alert in alerts.messages track by $index" class="panel-body alert-{{alerts.class}}" >{{alert}}</div>
+            </div>
+        </div>
+    </div>
+</div>

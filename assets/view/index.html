@@ -1,0 +1,15 @@
+<div class="container-fluid connexion-bg">
+    <div class="row">
+        <div class="col-xs-5 col-md-offset-6 index-centering">
+            <h1 class="text-blue"><b>Connexion</b></h1>
+            <form ng-submit="submit()">
+                <label class="label-form" for="email">Adresse mail:</label><br>
+                <input type="email" ng-model='email' id="email" class="form-control">
+                <label class="label-form" for="password">Mot de passe:</label><br>
+                <input ng-model='password' type="password" id="password" class="form-control"><br>
+                <input class="btn-submit text-white" type="submit" value="Connexion">
+            </form>
+            {{error}}
+        </div>
+    </div>
+</div>

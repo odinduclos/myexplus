@@ -1,0 +1,95 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img class="logo" src="assets/img/logo_40x40.svg" width="40px" height="40px"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ng-click="r_rome()" ng-if="userRole > 1" title='Gérer les fiches ROME'>Fiches ROME</a></li>
+                <li class="dropdown" >
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les utilisateurs de myexplus.">Utilisateurs<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_query()" ng-if="userRole > 1" title="Gérer les demandes d'inscription des stagiaires">Demandes d'inscrition</a></li>
+                        <li><a ng-click="r_admin()" ng-if="userRole == 3" title="Gérer les utilisateurs">Gérer les utilisateurs</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_validation()" title="Valider les compétences des stagiaires.">Compétences à valider</a></li>
+                        <li><a ng-click="r_archive()" ng-if="userRole == 1">Voir les compétences validées</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" ng-if="userRole > 1">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les stages E2C.">Stages<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_stagiaire()">Créer un stagiaire</a></li>
+                        <li><a ng-click="r_stage()" title="Ajouter ou supprimer un stage">Gérer les stages</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_master()" ng-if="userRole > 1">Créer un maître de stage</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><input type="submit" class="disconnect text-white" value="Déconnexion" ng-click="logout()"></li>
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row" style="margin-bottom: 50px">
+        <div class="col-xs-12">
+            Toutes les compétences validées, triées par stagiaire :
+            <select ng-options="(stagiaire.prenom + ' ' + stagiaire.nom) for stagiaire in stagiaires"  ng-model="stagiaire" ng-change="load_competence(stagiaire.id)">
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div ng-repeat="competence in competences" class="archive" style="overflow: auto; height: auto; padding: 10px;">
+                <div class="col-xs-4" style="text-align: center;">
+                    <span class="low text-blue">{{cur_stagiaire.prenom}} {{cur_stagiaire.nom}}</span>
+                    <span class="text-rose low">du {{competence.id_stage.date_debut}} au {{competence.id_stage.date_fin}}</span><br>
+                    <span class="low">{{competence.id_competence.titre}}</span>
+                </div>
+                <div class="col-xs-4 low" style="text-align: center;">
+                    <span ng-if="competence.id_competence.type == 'savoir'">
+                        <img style="width: 20px;margin-top: 0px;margin-left: 20px;" class="logo" src="assets/img/skills_35x35.png">
+                        {{competence.id_competence.id_metier.titre}}
+                    </span>
+                    <span ng-if="competence.id_competence.type == 'savoir-faire'">
+                        <img style="width: 20px;margin-top: 0px;margin-left: 20px;" class="logo" src="assets/img/knowledge_35x35.png">
+                        {{competence.id_competence.id_metier.titre}}
+                    </span>
+                </div>
+                <div style="float: right" class="col-xs-2">
+                    <span class="" ng-repeat="n in [].constructor(5) track by $index">
+                        <span ng-if="$index < competence.competence_stagiaire">
+                            <input type="checkbox" value={{$index+1}} class="star stars_skill" ng-model="lol" >
+                            <label class="star stars_skill" title="Niveau d'acquisition de la compétence." data-value={{$index+1}} data-activated="0" ng-click="add($index+1, competence.id)" style="background-image: url(assets/img/star_full_30x25.svg)" data-stage={{competence.id_competence.id}}></label>
+                        </span>
+                        <span ng-if="$index >= competence.competence_stagiaire">
+                            <input class="star stars_skill" value={{$index+1}} type="checkbox" ng-model="lol">
+                            <label class="star stars_skill" title="Niveau d'acquisition de la compétence." data-value={{$index+1}} data-activated="0" ng-click="add($index+1, competence.id)" data-stage={{competence.id_competence.id}} style="background-image: url(assets/img/star_empty_30x25.svg)"></label>
+                        </span>
+                    </span>
+                    <br>
+                    <heart ng-repeat="n in [].constructor(5) track by $index">
+                        <check ng-if="$index < competence.note_stagiaire">
+                            <img style="width: 25px;margin-top: 0px" class="logo star" title="Niveau d'apétence de la compétence." src="assets/img/heart_full_30x25.png">
+                        </check>
+                        <check ng-if="$index >= competence.note_stagiaire">
+                            <img style="width: 25px;margin-top: 0px" class="logo star" src="assets/img/heart_empty_30x25.png" title="Niveau d'apétence de la compétence.">
+                        </check>
+                    </heart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

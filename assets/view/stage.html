@@ -1,0 +1,103 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img class="logo" src="assets/img/logo_40x40.svg" width="40px" height="40px"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ng-click="r_rome()" ng-if="userRole > 1" title='Gérer les fiches ROME'>Fiches ROME</a></li>
+                <li class="dropdown" >
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les utilisateurs de myexplus.">Utilisateurs<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_query()" ng-if="userRole > 1" title="Gérer les demandes d'inscription des stagiaires">Demandes d'inscrition</a></li>
+                        <li><a ng-click="r_admin()" ng-if="userRole == 3" title="Gérer les utilisateurs">Gérer les utilisateurs</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_validation()" title="Valider les compétences des stagiaires.">Compétences à valider</a></li>
+                        <li><a ng-click="r_archive()" ng-if="userRole == 1">Voir les compétences validées</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" ng-if="userRole > 1">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les stages E2C.">Stages<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_stagiaire()">Créer un stagiaire</a></li>
+                        <li><a ng-click="r_stage()" title="Ajouter ou supprimer un stage">Gérer les stages</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_master()" ng-if="userRole > 1">Créer un maître de stage</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><input type="submit" class="disconnect text-white" value="Déconnexion" ng-click="logout()"></li>
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row text-center col-md-10 col-md-offset-1">
+        <div class="jumbotron">
+            <h2>Ajouter un stage</h2>
+            <hr>
+            <form ng-submit="stage()">
+                <span ng-show="userId == undefined"
+                      class="grey-text lighten-text-2">Selectionner un stagiaire :</span><br>
+                <select id="student" class="browser-default form-control" ng-show="userId == undefined"
+                        ng-options="stagiaire.id as stagiaire.id_utilisateur.mail for stagiaire in stagiaires"
+                        ng-model="stagiaire">
+                </select><br/>
+                <span class="grey-text lighten-text-2">Selectionner un métier: </span><br>
+                <select id="rome" ng-model="metier" class="form-control">
+                    <option ng-repeat="metier in metiers" value={{metier.id}}>{{metier.titre}}</option>
+                </select><br/>
+                <span class="grey-text lighten-text-2">Selectionner un maître de stage :</span><br>
+                <select id="master" ng-model="master" class="browser-default  form-control">
+                    <option ng-repeat="master in masters" value={{master.id}}>{{master.id_utilisateur.mail}}</option>
+                </select><br/>
+                <div class="text-center">
+                    <div class="col-xs-6">
+                        <br><span class="grey-text lighten-text-2">Début du stage :</span><br>
+                        <md-datepicker id="debut" ng-model="begin"></md-datepicker>
+                    </div>
+                    <div class="col-xs-6">
+                        <br><span class="grey-text lighten-text-2">Fin du stage :</span><br>
+                        <md-datepicker id="fin" ng-model="ends"></md-datepicker>
+                    </div>
+                    <br>
+                </div>
+                <button class="btn-submit text-white" type="submit">Ajouter</button>
+                <br/>
+            </form>
+        </div>
+        <div class="jumbotron">
+            <h2>Supprimer un stage</h2>
+            <hr>
+            <form ng-submit="rmvstage()">
+                <span ng-show="userId == undefined" class="grey-text lighten-text-2">Selectionner un stage :</span><br>
+                <select id="stage" ng-model="stage" class="browser-default form-control">
+                    <option ng-repeat="stage in stages track by $index" value={{stage.id_stage.id}}>(
+                        {{stagiairesD[$index]}} ) stage : {{metiersD[$index]}} du {{stage.id_stage.date_debut}} au
+                        {{stage.id_stage.date_fin}}
+                    </option>
+                </select><br/>
+                <button class="btn-submit text-white" type="submit">Supprimmer</button>
+            </form>
+        </div>
+    </div>
+    <div class="flash-message panel-{{alerts.class}}" ng-show="alerts.messages" ng-mouseover="disableFlash()">
+        <div ng-repeat="alert in alerts.messages track by $index" class="panel-body alert-{{alerts.class}}">{{alert}}
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+
+</script>

@@ -1,0 +1,289 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img class="logo" src="assets/img/logo_40x40.svg" width="40px" height="40px"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ng-click="r_rome()" ng-if="userRole > 1" title='Gérer les fiches ROME'>Fiches ROME</a></li>
+				<li class="dropdown" ng-if="userRole > 1">
+					<a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les utilisateurs de myexplus.">Utilisateurs<span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a ng-click="r_query()" ng-if="userRole > 1" title="Gérer les demandes d'inscription des stagiaires">Demandes d'inscrition</a></li>
+						<li><a ng-click="r_admin()" ng-if="userRole == 3" title="Gérer les utilisateurs">Gérer les utilisateurs</a></li>
+						<li class="divider" ng-if="userRole > 1"></li>
+						<li><a ng-click="r_validation()" title="Valider les compétences des stagiaires.">Compétences à valider</a></li>
+						<li><a ng-click="r_archive()" ng-if="userRole == 1">Voir les compétences validées</a></li>
+					</ul>
+				</li>
+                <li class="dropdown" ng-if="userRole > 1">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les stages E2C.">Stages<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_stagiaire()">Créer un stagiaire</a></li>
+                        <li><a ng-click="r_stage()" title="Ajouter ou supprimer un stage">Gérer les stages</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_master()" ng-if="userRole > 1">Créer un maître de stage</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><input type="submit" class="disconnect text-white" value="Déconnexion" ng-click="logout()"></li>
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div class="container" ng-app="admin">
+	<div class="col-md-10 col-md-offset-1 back_blue">
+		<h3 class="text-center">Ajouter un métier</h3>
+	</div>
+	<div class="col-md-10 col-md-offset-1 back_grey">
+		<form class="form-horizontal" ng-submit="submitMetier()">
+			<fieldset>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="titreMetier">Titre</label>
+					<div class="col-md-6">
+						<input id="titreMetier" ng-model="titreMetier" placeholder="" class="form-control input-md" required="" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="definitionMetier">Description</label>
+					<div class="col-md-6">
+						<textarea class="form-control" id="definitionMetier" ng-model="definitionMetier" rows="8"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="photo">Photo</label>
+					<div class="col-md-6">
+						<input id="photo" class="input-file" type="file" name="file" onchange="angular.element(this).scope().openFile(event)">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="singlebutton"></label>
+					<div class="col-md-6">
+						<button id="sendMetier" type="submit" class="btn btn-default btn-block btn_blue">Envoyer</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+	<div class="col-md-10 col-md-offset-1 back_blue">
+		<h3 class="text-center">Modifier un métier</h3>
+	</div>
+	<div class="col-md-10 col-md-offset-1 back_grey">
+		<form class="form-horizontal" ng-submit="submitMetierModif()">
+			<fieldset>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Métier</label>
+					<div class="col-md-6">
+						<select ng-model="idMetierModif" id="idMetierModif" class="form-control input-md" ng-options="metier as metier.titre for metier in metiers" ng-change="formAutoCompleteMetier()">
+							<option value="{{ metier.id }}">{{ metier.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="titreMetierModif">Titre</label>
+					<div class="col-md-6">
+						<input id="titreMetierModif" ng-model="titreMetierModif" placeholder="" class="form-control input-md" required="" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="definitionMetierModif">Description</label>
+					<div class="col-md-6">
+						<textarea class="form-control" id="definitionMetierModif" ng-model="definitionMetierModif" rows="8"></textarea>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="photo">Photo</label>
+					<div class="col-md-6">
+						<input id="photo" class="input-file" type="file" name="file" onchange="angular.element(this).scope().openFile(event)">					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="singlebutton"></label>
+					<div class="col-md-6">
+						<button id="sendComp" type="submit" class="btn btn-default btn-block btn_blue">Envoyer</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+	<div class="col-md-10 col-md-offset-1 back_blue">
+		<h3 class="text-center">Supprimer un métier</h3>
+	</div>
+	<div class="col-md-10 col-md-offset-1 back_grey">
+		<form class="form-horizontal" ng-submit="submitMetierDelete()">
+			<fieldset>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Métier concerné</label>
+					<div class="col-md-6">
+						<select ng-model="idMetierDelete" id="idMetierDelete" class="form-control input-md" ng-options="metier as metier.titre for metier in metiers">
+							<option value="{{ metier.id }}">{{ metier.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="singlebutton"></label>
+					<div class="col-md-6">
+						<button id="sendMetier" type="submit" class="btn btn-default btn-block btn_blue">Envoyer</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+	<div class="col-md-10 col-md-offset-1 back_blue">
+		<h3 class="text-center">Ajouter une competence a un métier</h3>
+	</div>
+	<div class="col-md-10 col-md-offset-1 back_grey">
+		<form class="form-horizontal" ng-submit="submitComp()">
+			<fieldset>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Métier concerné</label>
+					<div class="col-md-6">
+						<select ng-model="idMetierComp" id="idMetierComp" class="form-control input-md">
+							<option value="{{ metier.id }}" ng-repeat="metier in metiers">{{ metier.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="titreComp">Titre</label>
+					<div class="col-md-6">
+						<input id="titreComp" ng-model="titreComp" placeholder="" class="form-control input-md" required="" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="typeComp">Type</label>
+					<div class="col-md-6">
+						<select id="typeComp" ng-model="typeComp" class="form-control input-md" required="">
+							<option value="savoir">Savoir</option>
+							<option value="savoir-faire">Savoir-faire</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="singlebutton"></label>
+					<div class="col-md-6">
+						<button id="sendComp" type="submit" class="btn btn-default btn-block btn_blue">Envoyer</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+	<div class="col-md-10 col-md-offset-1 back_blue">
+		<h3 class="text-center">Modifier une competence liée a un métier</h3>
+	</div>
+	<div class="col-md-10 col-md-offset-1 back_grey">
+		<form class="form-horizontal" ng-submit="submitCompModif()">
+			<fieldset>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Métier</label>
+					<div class="col-md-6">
+						<select ng-model="idMetierModifComp" id="idMetierModifComp" class="form-control input-md" ng-options="metier as metier.titre for metier in metiers" ng-change="findCompModif()">
+							<option value="{{ metier.id }}">{{ metier.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Compétence a modifier</label>
+					<div class="col-md-6">
+						<select ng-model="idCompModif" id="idCompModif" class="form-control input-md" ng-options="competence as competence.titre for competence in competencesMetier" ng-change="formAutoCompleteComp()">
+							<option value="{{ competence.id }}">{{ competence.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="titreCompModif">Titre</label>
+					<div class="col-md-6">
+						<input id="titreCompModif" ng-model="titreCompModif" placeholder="" class="form-control input-md" required="" type="text">
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="typeCompModif">Type</label>
+					<div class="col-md-6">
+						<select id="typeCompModif" ng-model="typeCompModif" class="form-control input-md" required="">
+							<option value="savoir">Savoir</option>
+							<option value="savoir-faire">Savoir-faire</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="singlebutton"></label>
+					<div class="col-md-6">
+						<button id="sendComp" type="submit" class="btn btn-default btn-block btn_blue">Envoyer</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+
+	<div class="col-md-10 col-md-offset-1 back_blue">
+		<h3 class="text-center">Supprimer la competence d'un metier</h3>
+	</div>
+	<div class="col-md-10 col-md-offset-1 back_grey">
+		<form class="form-horizontal" ng-submit="submitMetierCompDelete()">
+			<fieldset>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Métier</label>
+					<div class="col-md-6">
+						<select ng-model="idMetierDeleteComp" id="idMetierDeleteComp" class="form-control input-md" ng-options="metier as metier.titre for metier in metiers" ng-change="findCompDelete()">
+							<option value="{{ metier.id }}">{{ metier.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label">Compétence a supprimer</label>
+					<div class="col-md-6">
+						<select ng-model="idCompDelete" id="idCompDelete" class="form-control input-md" ng-options="competence as competence.titre for competence in competencesMetierDelete">
+							<option value="{{ competence.id }}">{{ competence.titre }}</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-md-3 control-label" for="singlebutton"></label>
+					<div class="col-md-6">
+						<button id="sendMetier" type="submit" class="btn btn-default btn-block btn_blue">Envoyer</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	<div class="flash-message panel-{{alerts.class}}" ng-show="alerts.messages" ng-mouseover="disableFlash()" >
+		<div ng-repeat="alert in alerts.messages track by $index" class="panel-body alert-{{alerts.class}}" >{{alert}}</div>
+	</div>
+</div>

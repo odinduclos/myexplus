@@ -1,0 +1,119 @@
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#"><img class="logo" src="assets/img/logo_40x40.svg" width="40px" height="40px"></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li><a ng-click="r_rome()" ng-if="userRole > 1" title='Gérer les fiches ROME'>Fiches ROME</a></li>
+                <li class="dropdown" >
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les utilisateurs de myexplus.">Utilisateurs<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_query()" ng-if="userRole > 1" title="Gérer les demandes d'inscription des stagiaires">Demandes d'inscrition</a></li>
+                        <li><a ng-click="r_admin()" ng-if="userRole == 3" title="Gérer les utilisateurs">Gérer les utilisateurs</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_validation()" title="Valider les compétences des stagiaires.">Compétences à valider</a></li>
+                        <li><a ng-click="r_archive()" ng-if="userRole == 1">Voir les compétences validées</a></li>
+                    </ul>
+                </li>
+                <li class="dropdown" ng-if="userRole > 1">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" title="Gérer les stages E2C.">Stages<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a ng-click="r_stagiaire()">Créer un stagiaire</a></li>
+                        <li><a ng-click="r_stage()" title="Ajouter ou supprimer un stage">Gérer les stages</a></li>
+                        <li class="divider" ng-if="userRole > 1"></li>
+                        <li><a ng-click="r_master()" ng-if="userRole > 1">Créer un maître de stage</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><input type="submit" class="disconnect text-white" value="Déconnexion" ng-click="logout()"></li>
+
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-4 low-police padding-left">
+            <span class="text-blue">{{stagiaire.prenom}} {{stagiaire.nom}}</span> <span style="float:right;margin-bottom: 20px;">{{stagiaire.id_utilisateur.mail}}</span>
+        </div>
+    </div>
+</div>
+<div class="container background-grey" ng-app="admin" style="padding-top: 0px">
+    <div class="row" ng-controller="TabController">
+        <div class="col-xs-4 low-police" id="metiersList">
+            <repeater class="col-xs-12 job" ng-repeat="stage in stages" ng-class="{ active: isSet(stage.id_stage.id) }" href ng-click="setTab(stage.id_stage.id)">
+                <span class="capitalize">{{stage.id_stage.id_metier.titre}}</span><br>
+                <span style="float: right" class="color-rose">
+                    du {{stage.id_stage.date_debut}} au {{stage.id_stage.date_fin}}
+                </span>
+            </repeater>
+        </div>
+        <div class="col-xs-8" style="padding-top: 15px;">
+            <repeater ng-repeat="metier in metiers">
+                <repeater ng-repeat="competence in metier.value">
+                    <div ng-show="isSet(competence.id_stage.id)" class="border-bottom">
+                        <div class="col-xs-8">
+                            <check ng-if="competence.id_competence.type == 'savoir'">
+                                <img style="width: 25px;margin-top: 0px;margin-left: -20px;" class="logo" src="assets/img/skills_35x35.png">
+                            </check>
+                            <check ng-if="competence.id_competence.type == 'savoir-faire'">
+                                <img style="width: 25px;margin-top: 0px;margin-left: -20px;" class="logo" src="assets/img/knowledge_35x35.png">
+                            </check>
+                            <span class="text-blue low">{{competence.id_competence.titre}}</span><br>
+                            <span ng-if="competence.validation_responsable == true">
+                                <span class="my-btn" ng-click="validate(competence.id)" title="Modifiez le niveau d'acquisition de la compétence avant de cliquer sur le bouton modifier.">Modifier</span>
+                                <img style="width: 30px;margin-top: 0px;" src="assets/img/validate_30x30.png" title="Vous avez validé la compétence.">
+                            </span>
+                            <span ng-if="competence.validation_responsable == false">
+                                <span class="my-btn" ng-click="validate(competence.id)">Valider la compétence</span>
+                                <img style="width: 30px;margin-top: 0px;" src="assets/img/validated_30x30.png" title="Vous n'avez pas encore validé la compétence.">
+                            </span>
+                        </div>
+                        <div style="float: right" class="col-xs-4">
+                            <span class="" ng-repeat="n in [].constructor(5) track by $index">
+                                <span ng-if="$index < competence.competence_stagiaire">
+                                    <input type="checkbox" value={{$index+1}} class="star stars_skill" ng-model="lol" >
+                                    <label class="star stars_skill" title="Niveau d'acquisition de la compétence." data-value={{$index+1}} data-activated="0" ng-click="add($index+1, competence.id)" style="background-image: url(assets/img/star_full_30x25.svg)" data-stage={{competence.id_competence.id}}></label>
+                                </span>
+                                <span ng-if="$index >= competence.competence_stagiaire">
+                                    <input class="star stars_skill" value={{$index+1}} type="checkbox" ng-model="lol">
+                                    <label class="star stars_skill" title="Niveau d'acquisition de la compétence." data-value={{$index+1}} data-activated="0" ng-click="add($index+1, competence.id)" data-stage={{competence.id_competence.id}} style="background-image: url(assets/img/star_empty_30x25.svg)"></label>
+                                </span>
+                            </span>
+                            <br>
+                            <heart ng-repeat="n in [].constructor(5) track by $index">
+                                <check ng-if="$index < competence.note_stagiaire">
+                                    <img style="width: 25px;margin-top: 0px" class="logo star" title="Niveau d'apétence de la compétence." src="assets/img/heart_full_30x25.png">
+                                </check>
+                                <check ng-if="$index >= competence.note_stagiaire">
+                                    <img style="width: 25px;margin-top: 0px" class="logo star" src="assets/img/heart_empty_30x25.png" title="Niveau d'apétence de la compétence.">
+                                </check>
+                            </heart>
+                        </div>
+                        <br>
+                    </div>
+                </repeater>
+            </repeater>
+        </div>
+    </div>
+    <div class="flash-message panel-{{alerts.class}}" ng-show="alerts.messages" ng-mouseover="disableFlash()" >
+      <div ng-repeat="alert in alerts.messages track by $index" class="panel-body alert-{{alerts.class}}" >{{alert}}</div>
+  </div>
+</div>
+
+<script>
+    $( document ).ready(function() {
+        setTimeout("$(document).find('.job').first().trigger('click')", 1000);
+    });
+</script>
