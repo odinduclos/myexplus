@@ -1,0 +1,3 @@
+rootProject.name = 'myexp_native'
+
+include ':app'
