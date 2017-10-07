@@ -18,6 +18,12 @@ Le projet est décomposé en :
 ## Etat courant
 Le projet est disponible temporairement en ligne à : http://pierreriche.com/
 
+## Repository
+Le repository est composé de trois branches de travail :
++ La branche "React" qui contient les application React native pour Android et IOS à destination des stagiaires
++ La branche "api" qui contient l'api Symfony2 du projet et la BDD MySQL
++ La branche "Admin" qui contient l'application web Angular1 à destination des maitres de stage, responsables, et administrateurs
+
 L'application android non signée est disponible temporairement à : http://www.pierreriche.com/assets/myexp.apk
 
 L'application IOS reste à compiler et signer à partir des sources de la branche REACT
