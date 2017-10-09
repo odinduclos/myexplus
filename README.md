@@ -27,3 +27,13 @@ Le repository est composé de trois branches de travail :
 + La branche "React" qui contient les application React native pour Android et IOS à destination des stagiaires
 + La branche "api" qui contient l'api Symfony2 du projet et la BDD MySQL
 + La branche "Admin" qui contient l'application web Angular1 à destination des maitres de stage, responsables, et administrateurs
+
+## Contributeurs principaux
+### Développeurs
++ Paul Roos
++ Brian Boudrioux
++ Steven Briais
++ Pierre Riche
++ Clément Chastaingt
+### Designer
++ Célia Maurieras
